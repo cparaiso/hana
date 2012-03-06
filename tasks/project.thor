@@ -112,11 +112,15 @@ class Project < Thor
     
     case project.type
     when 'uportal'
+      if File.exists? "#{$source_dir}/.uPortal-#{project.version}.tar.gz"
+        puts "Found cached file.  Using it..."
+        return
+      end
       url = "#{$uportal_download_url}/uPortal-#{project.version}/uPortal-#{project.version}.tar.gz"
-      file = "#{$source_dir}/#{project.name}.tar.gz"
+      file = "#{$source_dir}/.uPortal-#{project.version}.tar.gz"
     when 'cas'
       url = "#{$cas_download_url}/cas-server-#{project.version}-release.tar.gz"
-      file = "#{$source_dir}/#{project.name}.tar.gz"
+      file = "#{$source_dir}/.cas-server-#{project.version}-release.tar.gz"
     else
       abort "Unknown project type. :("
     end
@@ -126,6 +130,11 @@ class Project < Thor
       |d| f = File.open(file, 'a') {|f| f.write d}
     }
     curl.perform
+    
+    Dir.chdir("#{$source_dir}") do
+      puts "Caching downloaded file..."
+      system "mv #{file} .uPortal-#{project.version}.tar.gz"
+    end
   end
   
   # setup uportal
@@ -133,10 +142,15 @@ class Project < Thor
     puts "Configuring uPortal project..."
     Dir.chdir($source_dir) do
       puts "Extracting..."
-      system "tar -xzf #{$source_dir}/#{project.name}.tar.gz"
-      system "mv #{$source_dir}/uPortal-#{project.version} #{$source_dir}/#{project.name}-src"
-      puts "Extracted to folder: #{$source_dir}/#{project.name}-src"
-      system "rm #{$source_dir}/#{project.name}.tar.gz"
+      
+      if project.type == 'uportal'
+        system "tar -xzf #{$source_dir}/.uPortal-#{project.version}.tar.gz"
+        system "mv #{$source_dir}/uPortal-#{project.version} #{$source_dir}/#{project.name}-src"
+        puts "Extracted to folder: #{$source_dir}/#{project.name}-src"
+      elsif project.type == 'cas'
+        system "tar -xzf #{$source_dir}/.cas-server-#{project.version}-release.tar.gz"
+      end
+      
     end
     Dir.chdir("#{$source_dir}/#{project.name}-src") do
       puts "Configuring build.properties..."
