@@ -105,4 +105,14 @@ class Project < Thor
       f.close
     end
   end
+  
+  #setup uportal
+  def setup_uportal
+    
+  end
+  
+  #setup cas
+  def setup_cas
+    
+  end
 end

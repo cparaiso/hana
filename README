@@ -1,1 +1,9 @@
 Manage your projects.
+
+Command list:
+
+project
+-------
+thor project:create [PROJECTNAME]  # Creates project.
+thor project:current               # Shows current project.
+thor project:switch PROJECTNAME    # Switches current project
