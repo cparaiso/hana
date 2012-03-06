@@ -38,9 +38,9 @@ class Project < Thor
       @projects = [project] # is empty push new project in an array
     end
     
+    fetch project
+    setup project
     write_to_yaml @projects
-    
-    #TODO: fetch and config project
     
     puts "#{project.name} created.  Don't forget to switch to the project."
   end # end of create
@@ -106,12 +106,47 @@ class Project < Thor
     end
   end
   
-  #setup uportal
-  def setup_uportal
+  # fetch project type
+  def fetch project
+    require 'curb'
     
+    case project.type
+    when 'uportal'
+      url = "#{$uportal_download_url}/uPortal-#{project.version}/uPortal-#{project.version}.tar.gz"
+      file = "#{$source_dir}/#{project.name}.tar.gz"
+    when 'cas'
+      url = "#{$cas_download_url}/cas-server-#{project.version}-release.tar.gz"
+      file = "#{$source_dir}/#{project.name}.tar.gz"
+    else
+      abort "Unknown project type. :("
+    end
+    
+    curl = Curl::Easy.new(url)
+  	curl.on_body {
+      |d| f = File.open(file, 'a') {|f| f.write d}
+    }
+    curl.perform
   end
   
-  #setup cas
+  # setup uportal
+  def setup project
+    puts "Configuring uPortal project..."
+    Dir.chdir($source_dir) do
+      puts "Extracting..."
+      system "tar -xzf #{$source_dir}/#{project.name}.tar.gz"
+      system "mv #{$source_dir}/uPortal-#{project.version} #{$source_dir}/#{project.name}-src"
+      puts "Extracted to folder: #{$source_dir}/#{project.name}-src"
+      system "rm #{$source_dir}/#{project.name}.tar.gz"
+    end
+    Dir.chdir("#{$source_dir}/#{project.name}-src") do
+      puts "Configuring build.properties..."
+      system "cp build.properties.sample build.properties"
+      gsub_file "#{$source_dir}/#{project.name}-src/build.properties", "@server.home@", "#{$deploy_dir}/#{project.name}-tomcat"
+    end
+    puts "uPortal project configured."
+  end
+  
+  # setup cas
   def setup_cas
     
   end
