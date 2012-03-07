@@ -17,7 +17,7 @@ class Project < Thor
         until valid_name == true
           name = ask 'Name of project: '
           valid_name = valid? @projects, name
-          puts "ERROR: #{name} already exists.  Please enter a different project name." if not valid_name
+          say_status :ERROR, "#{name} already exists.  Please enter a different project name.", :red if not valid_name
         end
       else
         abort "ERROR: #{project_name} already exists.  Please enter a different project name." if not valid? @projects, project_name
@@ -43,7 +43,7 @@ class Project < Thor
     setup project
     write_to_yaml @projects
     
-    puts "#{project.name} created.  Don't forget to switch to the project."
+    say_status :finished, "#{project.name} created.  Don't forget to switch to the project.", :green
   end # end of create
   
   # Task: switch project
@@ -66,9 +66,9 @@ class Project < Thor
       end
       
       write_to_yaml @projects
-      puts "Project switched to: #{project_name}"
+      say_status :switched, "Project switched to: #{project_name}", :green
     else
-      puts "No projects exist.  Try creating one first."
+      say_status :ERROR, "No projects exist.  Try creating one first.", :red
     end
   end # end of switch
   
@@ -79,7 +79,7 @@ class Project < Thor
     abort "There are no projects.  Try creating one first." if not @projects.is_a? Array
     @projects.each do |project|
       if project.current == true
-        puts "Current project: #{project.name} // #{project.type} // #{project.version}"
+        say_status :current, "Current project: #{project.name} // #{project.type} // #{project.version}", :green
         return
       end
     end
@@ -110,37 +110,35 @@ class Project < Thor
   # fetch project type
   def fetch obj
     require 'curb'
-    puts "Fetching stuff..."
     if obj.instance_of? Proj
       case obj.type
       when 'uportal'
         if File.exists? "#{$source_dir}/.uPortal-#{obj.version}.tar.gz"
-          puts "Found cached file.  Using it..."
+          say_status :uportal, "Found cached file.  Using it.", :green
           return
         end
         url = "#{$uportal_download_url}/uPortal-#{obj.version}/uPortal-#{obj.version}.tar.gz"
         file = "#{$source_dir}/.uPortal-#{obj.version}.tar.gz"
-        puts "Downloading uPortal..."
+        say_status :uportal, "Downloading uPortal...", :green
       when 'cas'
         if File.exists? "#{$source_dir}/.cas-server-#{obj.version}-release.tar.gz"
-          puts "Found cached CAS file.  Using it..."
+          say_status :cas, "Found cached CAS file.  Using it.", :green
           return
         end
         url = "#{$cas_download_url}/cas-server-#{obj.version}-release.tar.gz"
         file = "#{$source_dir}/.cas-server-#{obj.version}-release.tar.gz"
-        puts "Downloading CAS..."
+        say_status :cas, "Downloading CAS...", :green
       else
         abort "Unknown project type. :("
       end
     elsif obj == :tomcat
       if File.exists? "#{$deploy_dir}/.apache-tomcat-6.0.35.tar.gz"
-        puts "Found cached Tomcat file.  Using it..."
+        say_status :tomcat, "Found cached Tomcat file.  Using it.", :green
         return
       end
       url = "#{$tomcat_download_url}/apache-tomcat-6.0.35.tar.gz"
-      puts url
       file = "#{$deploy_dir}/.apache-tomcat-6.0.35.tar.gz"
-      puts "Downloading Tomcat 6.0.35..."
+      say_status :tomcat, "Downloading Tomcat 6.0.35...", :green
     end
     
     curl = Curl::Easy.new(url)
@@ -155,34 +153,35 @@ class Project < Thor
   def setup obj
     # deploy tomcat
     Dir.chdir($deploy_dir) do
-      puts "Extracting tomcat... #{$deploy_dir}/.apache-tomcat-6.0.35.tar.gz"
+      say_status :tomcat, "Extracting tomcat.", :green
       system "tar -xzf #{$deploy_dir}/.apache-tomcat-6.0.35.tar.gz"
       system "mv #{$deploy_dir}/apache-tomcat-6.0.35 #{$deploy_dir}/#{obj.name}-tomcat"
-      puts "Configuring Tomcat..."
+      say_status :tomcat, "Configuring Tomcat.", :green
       gsub_file "#{$deploy_dir}/#{obj.name}-tomcat/conf/catalina.properties", "shared.loader=", "shared.loader=${catalina.base}/shared/classes,${catalina.base}/shared/lib/*.jar", :verbose => false
+      say_status :tomcat, "Configuring catalina.properties.", :green
       gsub_file "#{$deploy_dir}/#{obj.name}-tomcat/conf/server.xml", 'redirectPort="8443"', 'redirectPort="8443" emptySessionPath="true" compression="on" compressableMimeType="text/html,text/xml,text/plain"', :verbose => false
-      # TODO: settings for tomcat need to be.... set
+      say_status :tomcat, "Configuring server.xml.", :green
     end
     
     # setup based on type of project
     Dir.chdir($source_dir) do
       if obj.type == 'uportal'
-        puts "Setting up uPortal..."
+        say_status :uportal, "Setting up uPortal.", :green
         system "tar -xzf #{$source_dir}/.uPortal-#{obj.version}.tar.gz"
         system "mv #{$source_dir}/uPortal-#{obj.version} #{$source_dir}/#{obj.name}-src"
-        puts "Extracted to folder: #{$source_dir}/#{obj.name}-src"
+        say_status :uportal, "Extracted to folder: #{$source_dir}/#{obj.name}-src", :green
         Dir.chdir("#{$source_dir}/#{obj.name}-src") do
-          puts "Configuring build.properties..."
+          say_status :uportal, "Configuring build.properties.", :green
           system "cp build.properties.sample build.properties"
           gsub_file "#{$source_dir}/#{obj.name}-src/build.properties", "@server.home@", "#{$deploy_dir}/#{obj.name}-tomcat", :verbose => false
         end
       elsif obj.type == 'cas'
-        puts "Setting up CAS..."
+        say_status :cas, "Setting up CAS.", :green
         system "tar -xzf #{$source_dir}/.cas-server-#{obj.version}-release.tar.gz"
         Dir.chdir("#{$source_dir}/cas-server-#{obj.version}/modules") do
-          puts "Installing CAS to #{$deploy_dir}/#{obj.name}-tomcat/webapps"
+          say_status :cas, "Installing CAS to #{$deploy_dir}/#{obj.name}-tomcat/webapps", :green
           system "cp cas-server-webapp-#{obj.version}.war #{$deploy_dir}/#{obj.name}-tomcat/webapps"
-          puts "Cleaning up CAS source files..."
+          say_status :cas, "Cleaning up CAS source files.", :green
           system "rm -r #{$source_dir}/cas-server-#{obj.version}"
         end
       end
