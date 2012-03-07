@@ -186,11 +186,5 @@ class Project < Thor
         end
       end
     end
-    
-  end
-  
-  # setup cas
-  def setup_cas
-    
   end
 end
