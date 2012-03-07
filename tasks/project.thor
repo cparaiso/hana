@@ -38,6 +38,7 @@ class Project < Thor
       @projects = [project] # is empty push new project in an array
     end
     
+    fetch :tomcat
     fetch project
     setup project
     write_to_yaml @projects
@@ -107,22 +108,39 @@ class Project < Thor
   end
   
   # fetch project type
-  def fetch project
+  def fetch obj
     require 'curb'
-    
-    case project.type
-    when 'uportal'
-      if File.exists? "#{$source_dir}/.uPortal-#{project.version}.tar.gz"
-        puts "Found cached file.  Using it..."
+    puts "Fetching stuff..."
+    if obj.instance_of? Proj
+      case obj.type
+      when 'uportal'
+        if File.exists? "#{$source_dir}/.uPortal-#{obj.version}.tar.gz"
+          puts "Found cached file.  Using it..."
+          return
+        end
+        url = "#{$uportal_download_url}/uPortal-#{obj.version}/uPortal-#{obj.version}.tar.gz"
+        file = "#{$source_dir}/.uPortal-#{obj.version}.tar.gz"
+        puts "Downloading uPortal..."
+      when 'cas'
+        if File.exists? "#{$source_dir}/.cas-server-#{obj.version}-release.tar.gz"
+          puts "Found cached CAS file.  Using it..."
+          return
+        end
+        url = "#{$cas_download_url}/cas-server-#{obj.version}-release.tar.gz"
+        file = "#{$source_dir}/.cas-server-#{obj.version}-release.tar.gz"
+        puts "Downloading CAS..."
+      else
+        abort "Unknown project type. :("
+      end
+    elsif obj == :tomcat
+      if File.exists? "#{$deploy_dir}/.apache-tomcat-6.0.35.tar.gz"
+        puts "Found cached Tomcat file.  Using it..."
         return
       end
-      url = "#{$uportal_download_url}/uPortal-#{project.version}/uPortal-#{project.version}.tar.gz"
-      file = "#{$source_dir}/.uPortal-#{project.version}.tar.gz"
-    when 'cas'
-      url = "#{$cas_download_url}/cas-server-#{project.version}-release.tar.gz"
-      file = "#{$source_dir}/.cas-server-#{project.version}-release.tar.gz"
-    else
-      abort "Unknown project type. :("
+      url = "#{$tomcat_download_url}/apache-tomcat-6.0.35.tar.gz"
+      puts url
+      file = "#{$deploy_dir}/.apache-tomcat-6.0.35.tar.gz"
+      puts "Downloading Tomcat 6.0.35..."
     end
     
     curl = Curl::Easy.new(url)
@@ -131,33 +149,42 @@ class Project < Thor
     }
     curl.perform
     
-    Dir.chdir("#{$source_dir}") do
-      puts "Caching downloaded file..."
-      system "mv #{file} .uPortal-#{project.version}.tar.gz"
-    end
   end
   
   # setup uportal
-  def setup project
-    puts "Configuring uPortal project..."
+  def setup obj
+    # deploy tomcat
+    Dir.chdir($deploy_dir) do
+      puts "Extracting tomcat... #{$deploy_dir}/.apache-tomcat-6.0.35.tar.gz"
+      system "tar -xzf #{$deploy_dir}/.apache-tomcat-6.0.35.tar.gz"
+      system "mv #{$deploy_dir}/apache-tomcat-6.0.35 #{$deploy_dir}/#{obj.name}-tomcat"
+      # TODO: settings for tomcat need to be.... set
+    end
+    
+    # setup based on type of project
     Dir.chdir($source_dir) do
-      puts "Extracting..."
-      
-      if project.type == 'uportal'
-        system "tar -xzf #{$source_dir}/.uPortal-#{project.version}.tar.gz"
-        system "mv #{$source_dir}/uPortal-#{project.version} #{$source_dir}/#{project.name}-src"
-        puts "Extracted to folder: #{$source_dir}/#{project.name}-src"
-      elsif project.type == 'cas'
-        system "tar -xzf #{$source_dir}/.cas-server-#{project.version}-release.tar.gz"
+      if obj.type == 'uportal'
+        puts "Setting up uPortal..."
+        system "tar -xzf #{$source_dir}/.uPortal-#{obj.version}.tar.gz"
+        system "mv #{$source_dir}/uPortal-#{obj.version} #{$source_dir}/#{obj.name}-src"
+        puts "Extracted to folder: #{$source_dir}/#{obj.name}-src"
+        Dir.chdir("#{$source_dir}/#{obj.name}-src") do
+          puts "Configuring build.properties..."
+          system "cp build.properties.sample build.properties"
+          gsub_file "#{$source_dir}/#{obj.name}-src/build.properties", "@server.home@", "#{$deploy_dir}/#{obj.name}-tomcat"
+        end
+      elsif obj.type == 'cas'
+        puts "Setting up CAS..."
+        system "tar -xzf #{$source_dir}/.cas-server-#{obj.version}-release.tar.gz"
+        Dir.chdir("#{$source_dir}/cas-server-#{obj.version}/modules") do
+          puts "Installing CAS to #{$deploy_dir}/#{obj.name}-tomcat/webapps"
+          system "cp cas-server-webapp-#{obj.version}.war #{$deploy_dir}/#{obj.name}-tomcat/webapps"
+          puts "Cleaning up CAS source files..."
+          system "rm -r #{$source_dir}/cas-server-#{obj.version}"
+        end
       end
-      
     end
-    Dir.chdir("#{$source_dir}/#{project.name}-src") do
-      puts "Configuring build.properties..."
-      system "cp build.properties.sample build.properties"
-      gsub_file "#{$source_dir}/#{project.name}-src/build.properties", "@server.home@", "#{$deploy_dir}/#{project.name}-tomcat"
-    end
-    puts "uPortal project configured."
+    
   end
   
   # setup cas
