@@ -158,6 +158,9 @@ class Project < Thor
       puts "Extracting tomcat... #{$deploy_dir}/.apache-tomcat-6.0.35.tar.gz"
       system "tar -xzf #{$deploy_dir}/.apache-tomcat-6.0.35.tar.gz"
       system "mv #{$deploy_dir}/apache-tomcat-6.0.35 #{$deploy_dir}/#{obj.name}-tomcat"
+      puts "Configuring Tomcat..."
+      gsub_file "#{$deploy_dir}/#{obj.name}-tomcat/conf/catalina.properties", "shared.loader=", "shared.loader=${catalina.base}/shared/classes,${catalina.base}/shared/lib/*.jar", :verbose => false
+      gsub_file "#{$deploy_dir}/#{obj.name}-tomcat/conf/server.xml", 'redirectPort="8443"', 'redirectPort="8443" emptySessionPath="true" compression="on" compressableMimeType="text/html,text/xml,text/plain"', :verbose => false
       # TODO: settings for tomcat need to be.... set
     end
     
@@ -171,7 +174,7 @@ class Project < Thor
         Dir.chdir("#{$source_dir}/#{obj.name}-src") do
           puts "Configuring build.properties..."
           system "cp build.properties.sample build.properties"
-          gsub_file "#{$source_dir}/#{obj.name}-src/build.properties", "@server.home@", "#{$deploy_dir}/#{obj.name}-tomcat"
+          gsub_file "#{$source_dir}/#{obj.name}-src/build.properties", "@server.home@", "#{$deploy_dir}/#{obj.name}-tomcat", :verbose => false
         end
       elsif obj.type == 'cas'
         puts "Setting up CAS..."
