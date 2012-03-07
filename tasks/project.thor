@@ -1,5 +1,5 @@
 require 'yaml'
-
+# Manages project file tasks
 class Project < Thor
   include Thor::Actions
   
