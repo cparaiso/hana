@@ -80,7 +80,7 @@ class Project < Thor
     @projects.each do |project|
       if project.current == true
         say_status :current, "Current project: #{project.name} // #{project.type} // #{project.version}", :green
-        return
+        return project
       end
     end
     puts "There is no current project."
