@@ -16,6 +16,8 @@ thor project:switch PROJECTNAME    # Switches current project
 
 uportal
 -------
-thor uportal:ear   # ant deploy-ear
-thor uportal:init  # ant initportal
-thor uportal:war   # ant deploy-war
+thor uportal:ear                               # ant deploy-ear
+thor uportal:import FILE                       # ant data-import -D[arg]
+thor uportal:init                              # ant initportal
+thor uportal:portlet PATH_TO_PORTLET_WAR_FILE  # ant deployPortletApp -D[arg]
+thor uportal:war                               # ant deploy-war
