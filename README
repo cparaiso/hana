@@ -1,9 +1,21 @@
 Manage your projects.
+Commands can be run in whatever directory you're in as long as the user has set the current project.
 
 Command list:
+
+db
+--
+thor db:start  # Start database
+thor db:stop   # Stop database
 
 project
 -------
 thor project:create [PROJECTNAME]  # Creates project.
 thor project:current               # Shows current project.
 thor project:switch PROJECTNAME    # Switches current project
+
+uportal
+-------
+thor uportal:ear   # ant deploy-ear
+thor uportal:init  # ant initportal
+thor uportal:war   # ant deploy-war
