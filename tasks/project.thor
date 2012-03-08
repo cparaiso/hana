@@ -27,6 +27,10 @@ class Project < Thor
       version = ask 'What version?: '
       project = Proj.new name, type, version, $deploy_dir, $source_dir, false
     else # tag arguments exist, create the project
+      if project_name.nil?
+        say_status :error, 'Project name required.  Please try again.', :red
+        return
+      end
       project = Proj.new project_name, options[:type], options[:version], $deploy_dir, $source_dir, false
       abort "ERROR: #{project.name} already exists.  Please enter a different project name." if not valid? @projects, project.name
     end
@@ -68,7 +72,7 @@ class Project < Thor
       write_to_yaml @projects
       say_status :switched, "Project switched to: #{project_name}", :green
     else
-      say_status :ERROR, "No projects exist.  Try creating one first.", :red
+      say_status :error, "No projects exist.  Try creating one first.", :red
     end
   end # end of switch
   
@@ -83,7 +87,7 @@ class Project < Thor
         return project
       end
     end
-    puts "There is no current project."
+    say_status :error, "There is no current project.", :red
   end
   
 #----------------------PRIVATE------------------------
