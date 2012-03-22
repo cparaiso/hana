@@ -15,10 +15,20 @@ thor project:create [PROJECTNAME]  # Creates project.
 thor project:current               # Shows current project.
 thor project:switch PROJECTNAME    # Switches current project
 
+tomcat
+------
+thor tomcat:start  # Start Tomcat.
+thor tomcat:stop   # Stop Tomcat.
+
 uportal
 -------
 thor uportal:ear                               # ant deploy-ear
-thor uportal:import FILE                       # ant data-import -D[arg]
+thor uportal:import FILE                       # ant data-import -Dfile=[arg]
 thor uportal:init                              # ant initportal
 thor uportal:portlet PATH_TO_PORTLET_WAR_FILE  # ant deployPortletApp -D[arg]
-thor uportal:war                               # ant deploy-war
+thor uportal:sync                              # Sync tomcat files back to source
+thor uportal:war
+
+TODO:
+project:create - Add feature to clone from github/master
+uportal:skin - Add skin. Set default skin. Delete skin.
