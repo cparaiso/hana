@@ -57,7 +57,7 @@ class Uportal < Thor
     end
   end
   
-  desc 'import FILE', 'ant data-import -D[arg]'
+  desc 'import FILE', 'ant data-import -Dfile=[arg]'
   def import filename
     current = is_uportal
     if not current
@@ -65,7 +65,7 @@ class Uportal < Thor
       return
     end
     Dir.chdir("#{current.source_dir}/#{current.name}-src") do
-      system "ant data-import -D#{current.source_dir}/#{current.name}-src/uportal-war/#{filename}"
+      system "ant data-import -Dfile=#{current.source_dir}/#{current.name}-src/uportal-war/#{filename}"
       say_status :uportal, "#{current.source_dir}/#{current.name}-src/uportal-war/#{filename}", :green
     end
   end
