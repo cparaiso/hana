@@ -5,4 +5,11 @@
   version: 4.0.2
   deploy_dir: /Users/cparaiso/dev/deploy
   source_dir: /Users/cparaiso/dev/src
+  current: false
+- !ruby/struct:Thor::Sandbox::Proj
+  name: sync-test
+  type: uportal
+  version: 4.0.4
+  deploy_dir: /Users/cparaiso/dev/deploy
+  source_dir: /Users/cparaiso/dev/src
   current: true
