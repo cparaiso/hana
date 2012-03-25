@@ -4,7 +4,7 @@ class Uportal < Thor
   include Thor::Actions
   
   desc 'init', 'ant initportal'
-  method_option :skip_test, :aliases => "-s", :type => :boolean, :default => false, :desc => "Type of project."
+  method_option :skip_test, :aliases => "-s", :type => :boolean, :default => false, :desc => "Skip maven tests."
   def init
     current = is_uportal
     if not current
@@ -21,6 +21,7 @@ class Uportal < Thor
   end
   
   desc 'war', 'ant deploy-war'
+  method_option :skip_test, :aliases => "-s", :type => :boolean, :default => false, :desc => "Skip maven tests."
   def war
     current = is_uportal
     if not current
@@ -28,7 +29,11 @@ class Uportal < Thor
       return
     end
     Dir.chdir("#{current.source_dir}/#{current.name}-src") do
-      system "ant deploy-war"
+      if options[:skip_test]
+        system "ant deploy-war -Dmaven.test.skip=true"
+      else
+        system "ant deploy-war"
+      end
     end
   end
   
