@@ -117,6 +117,13 @@ class Project < Thor
     if obj.instance_of? Proj
       case obj.type
       when 'uportal'
+        if obj.version == 'master'
+          say_status :uportal, "Cloning from github/master..."
+          Dir.chdir "#{$source_dir}" do
+            system "git clone #{$uportal_git_url} #{obj.name}-src"
+          end
+          return
+        end
         if File.exists? "#{$source_dir}/.uPortal-#{obj.version}.tar.gz"
           say_status :uportal, "Found cached file.  Using it.", :green
           return
@@ -170,10 +177,12 @@ class Project < Thor
     # setup based on type of project
     Dir.chdir($source_dir) do
       if obj.type == 'uportal'
-        say_status :uportal, "Setting up uPortal.", :green
-        system "tar -xzf #{$source_dir}/.uPortal-#{obj.version}.tar.gz"
-        system "mv #{$source_dir}/uPortal-#{obj.version} #{$source_dir}/#{obj.name}-src"
-        say_status :uportal, "Extracted to folder: #{$source_dir}/#{obj.name}-src", :green
+        if obj.version != 'master'
+          say_status :uportal, "Setting up uPortal.", :green
+          system "tar -xzf #{$source_dir}/.uPortal-#{obj.version}.tar.gz"
+          system "mv #{$source_dir}/uPortal-#{obj.version} #{$source_dir}/#{obj.name}-src"
+          say_status :uportal, "Extracted to folder: #{$source_dir}/#{obj.name}-src", :green
+        end
         Dir.chdir("#{$source_dir}/#{obj.name}-src") do
           say_status :uportal, "Configuring build.properties.", :green
           system "cp build.properties.sample build.properties"
