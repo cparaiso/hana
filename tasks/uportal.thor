@@ -1,4 +1,5 @@
 require 'yaml'
+require 'nokogiri'
 # uportal tasks
 class Uportal < Thor
   include Thor::Actions
@@ -105,7 +106,39 @@ class Uportal < Thor
       say_status :uportal, " Syncing uportal theme.", :green
       system "rsync -ruv --exclude '.DS_Store' --exclude '*svn' --exclude '.sass*' --exclude '*.sggr*' #{deployed_theme_dir} #{source_theme_dir}"
     end
-    
+  end
+  
+  desc 'skin', 'Add or delete skins'
+  method_option :add, :aliases => "-a", :type => :boolean, :default => false, :desc => "Add skin."
+  def skin skin_name
+    current = is_uportal
+    if not current
+      say_status :error, "The current project's type is not uportal."
+      return
+    end
+    if options[:add]
+      Dir.chdir "#{current.source_dir}/#{current.name}-src/uportal-war/src/main/webapp/media/skins/universality" do
+        if File.directory? skin_name
+          say_status :uportal, "#{skin_name} already exists."
+          return
+        end
+        system "cp -R uportal3 #{skin_name}"
+        say_status :uportal, "Created skin: #{skin_name}."    
+        xml = Nokogiri::XML(File.open 'skinList.xml')
+        skin = Nokogiri::XML::Node.new 'skin', xml
+        skin_children = {'skin-key'  => skin_name, 'skin-name'  => skin_name, 'skin-description'  => skin_name}
+        skin_children.each do |key,value|
+          node = Nokogiri::XML::Node.new key, skin
+          node.content = value
+          skin.add_child node
+        end
+        xml.xpath('//skins/skin').first.add_previous_sibling skin
+        file = File.open 'skinList.xml', 'w'
+        file.puts xml.to_xml
+        file.close
+        say_status :uoprtal, "Updated skinList.xml."  
+      end
+    end
   end
 
 #----------------------PRIVATE------------------------
