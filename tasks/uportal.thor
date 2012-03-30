@@ -111,13 +111,20 @@ class Uportal < Thor
   desc 'skin', 'Add or delete skins'
   method_option :add, :aliases => "-a", :type => :boolean, :default => false, :desc => "Add skin."
   method_option :default, :aliases => "-d", :type => :string, :default => nil, :desc => "Set default skin."
-  def skin
+  def skin skin_name=nil
     current = is_uportal
     if not current
       say_status :error, "The current project's type is not uportal.", :red
       return
     end
-    if options[:add]
+    if options.empty?
+      if skin_name.nil?
+        say_status :error, "Failed: skin name needed as an argument. uportal:skin [skin_name]", :red
+        return
+      end
+      say_status :uportal, "Opening deployed skin directory...", :green
+      system "#{$editor} #{current.source_dir}/#{current.name}-src/uportal-war/src/main/webapp/media/skins/universality/#{skin_name}"
+    elsif options[:add]
       skin_name = options[:add]
       Dir.chdir "#{current.source_dir}/#{current.name}-src/uportal-war/src/main/webapp/media/skins/universality" do
         if File.directory? skin_name
@@ -140,8 +147,7 @@ class Uportal < Thor
         file.close
         say_status :uportal, "Updated skinList.xml."
       end
-    end
-    if options[:default]
+    elsif options[:default]
       skin_name = options[:default]
       gsub_file "#{current.source_dir}/#{current.name}-src/uportal-war/src/main/data/required_entities/stylesheet-descriptor/DLMXHTML.stylesheet-descriptor.xml", /<default-value>.*<\/default-value>/, "<default-value>#{skin_name}</default-value>"
       # import assumes uportal-war
