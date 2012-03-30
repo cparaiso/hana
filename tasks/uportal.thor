@@ -110,13 +110,15 @@ class Uportal < Thor
   
   desc 'skin', 'Add or delete skins'
   method_option :add, :aliases => "-a", :type => :boolean, :default => false, :desc => "Add skin."
-  def skin skin_name
+  method_option :default, :aliases => "-d", :type => :string, :default => nil, :desc => "Set default skin."
+  def skin
     current = is_uportal
     if not current
-      say_status :error, "The current project's type is not uportal."
+      say_status :error, "The current project's type is not uportal.", :red
       return
     end
     if options[:add]
+      skin_name = options[:add]
       Dir.chdir "#{current.source_dir}/#{current.name}-src/uportal-war/src/main/webapp/media/skins/universality" do
         if File.directory? skin_name
           say_status :uportal, "#{skin_name} already exists."
@@ -136,8 +138,15 @@ class Uportal < Thor
         file = File.open 'skinList.xml', 'w'
         file.puts xml.to_xml
         file.close
-        say_status :uoprtal, "Updated skinList.xml."  
+        say_status :uportal, "Updated skinList.xml."
       end
+    end
+    if options[:default]
+      skin_name = options[:default]
+      gsub_file "#{current.source_dir}/#{current.name}-src/uportal-war/src/main/data/required_entities/stylesheet-descriptor/DLMXHTML.stylesheet-descriptor.xml", /<default-value>.*<\/default-value>/, "<default-value>#{skin_name}</default-value>"
+      # import assumes uportal-war
+      invoke :import, ["src/main/data/required_entities/stylesheet-descriptor/DLMXHTML.stylesheet-descriptor.xml"]
+      say_status :uportal, "The default skin has been set to: #{skin_name}"
     end
   end
 
