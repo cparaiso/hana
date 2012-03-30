@@ -26,8 +26,6 @@ class Uportal < Thor
     source_theme_dir = "#{current.source_dir}/#{current.name}-src/uportal-war/src/main/resources/layout/theme"
     
     system "rsync -ruq --exclude '.DS_Store' --exclude '*svn' --exclude '.sass*' --exclude '*.aggr*' #{deployed_desktop_skin_dir} #{source_desktop_skin_dir}"
-    puts '------------------------------------------------------------'
-    say_status :uportal, " Syncing uportal theme.", :green
     system "rsync -ruq --exclude '.DS_Store' --exclude '*svn' --exclude '.sass*' --exclude '*.sggr*' #{deployed_theme_dir} #{source_theme_dir}"
     say_status :uportal, "Ready.", :green
   end
@@ -110,12 +108,17 @@ class Uportal < Thor
       puts '------------------------------------------------------------'
       say_status :uportal, " Syncing uportal theme.", :green
       system "rsync -ruv --exclude '.DS_Store' --exclude '*svn' --exclude '.sass*' --exclude '*.sggr*' #{deployed_theme_dir} #{source_theme_dir}"
+      puts '------------------------------------------------------------'
     elsif options[:sync_skin]
+      puts '------------------------------------------------------------'
       say_status :uportal, "Syncing uportal skins.", :green
       system "rsync -ruv --exclude '.DS_Store' --exclude '*svn' --exclude '.sass*' --exclude '*.aggr*' #{deployed_desktop_skin_dir} #{source_desktop_skin_dir}"
+      puts '------------------------------------------------------------'
     elsif options[:sync_theme]
+      puts '------------------------------------------------------------'
       say_status :uportal, " Syncing uportal theme.", :green
       system "rsync -ruv --exclude '.DS_Store' --exclude '*svn' --exclude '.sass*' --exclude '*.sggr*' #{deployed_theme_dir} #{source_theme_dir}"
+      puts '------------------------------------------------------------'
     end
   end
   
