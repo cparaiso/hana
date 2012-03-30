@@ -19,6 +19,17 @@ class Uportal < Thor
         system "ant clean initportal"
       end
     end
+    say_status :uportal, "Syncing deployed skin/theme files to source.", :green
+    deployed_desktop_skin_dir = "#{current.deploy_dir}/#{current.name}-tomcat/webapps/uPortal/media/skins/universality"
+    deployed_theme_dir = "#{current.deploy_dir}/#{current.name}-tomcat/webapps/uPortal/WEB-INF/classes/layout/theme/"
+    source_desktop_skin_dir = "#{current.source_dir}/#{current.name}-src/uportal-war/src/main/webapp/media/skins"
+    source_theme_dir = "#{current.source_dir}/#{current.name}-src/uportal-war/src/main/resources/layout/theme"
+    
+    system "rsync -ruq --exclude '.DS_Store' --exclude '*svn' --exclude '.sass*' --exclude '*.aggr*' #{deployed_desktop_skin_dir} #{source_desktop_skin_dir}"
+    puts '------------------------------------------------------------'
+    say_status :uportal, " Syncing uportal theme.", :green
+    system "rsync -ruq --exclude '.DS_Store' --exclude '*svn' --exclude '.sass*' --exclude '*.sggr*' #{deployed_theme_dir} #{source_theme_dir}"
+    say_status :uportal, "Ready.", :green
   end
   
   desc 'war', 'ant deploy-war'
