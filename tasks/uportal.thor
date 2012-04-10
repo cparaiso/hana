@@ -1,5 +1,7 @@
 require 'yaml'
 require 'nokogiri'
+require "#{ENV['HOME']}/.hana/config"
+require "#{ENV['HOME']}/.hana/project"
 # uportal tasks
 class Uportal < Thor
   include Thor::Actions
@@ -7,7 +9,8 @@ class Uportal < Thor
   desc 'init', 'ant initportal'
   method_option :skip_test, :aliases => "-s", :type => :boolean, :default => false, :desc => "Skip maven tests."
   def init
-    current = is_uportal
+    p = Projekt.new
+    current = p.is_uportal
     if not current
       say_status :error, "The current project's type is not uportal."
       return

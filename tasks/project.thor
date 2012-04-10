@@ -1,4 +1,6 @@
 require 'yaml'
+require "#{ENV['HOME']}/.hana/config"
+require "#{ENV['HOME']}/.hana/project"
 # Manages project file tasks
 class Project < Thor
   include Thor::Actions
@@ -9,7 +11,7 @@ class Project < Thor
   method_option :version, :aliases => "-v", :type => :string, :desc => "Which version do you want?"
   def create project_name=nil
     # load projects yaml
-    @projects = YAML.load_file 'data/projects.yml'
+    @projects = YAML.load_file "#{ENV['HOME']}/.hana/data/projects.yml"
     # ask questions if tag args don't exist
     if options.empty?
       if project_name.nil?
@@ -53,7 +55,7 @@ class Project < Thor
   # Task: switch project
   desc 'switch PROJECTNAME', 'Switches current project'
   def switch project_name
-    @projects = YAML.load_file 'data/projects.yml'
+    @projects = YAML.load_file "#{ENV['HOME']}/.hana/data/projects.yml"
     if @projects.is_a? Array
       switched = false
       @projects.each do |project|
@@ -79,7 +81,8 @@ class Project < Thor
   # Task: return current project
   desc 'current', 'Shows current project.'
   def current
-    @projects = YAML.load_file 'data/projects.yml'
+=begin
+    @projects = YAML.load_file "#{ENV['HOME']}/.hana/data/projects.yml"
     abort "There are no projects.  Try creating one first." if not @projects.is_a? Array
     @projects.each do |project|
       if project.current == true
@@ -88,6 +91,14 @@ class Project < Thor
       end
     end
     say_status :error, "There is no current project.", :red
+=end
+  p = Projekt.new
+  current = p.get_current
+  if current
+    say_status :current, "#{current.name} // #{current.type} // #{current.version}", :green
+  else
+    say_status :error, "There is no current project.", :red
+  end
   end
   
 #----------------------PRIVATE------------------------
@@ -105,7 +116,7 @@ class Project < Thor
   
   # Write to projects.yml file
   def write_to_yaml projects
-    File.open('data/projects.yml', 'w') do |f|
+    File.open("#{ENV['HOME']}/.hana/data/projects.yml", 'w') do |f|
       f.write(projects.to_yaml)
       f.close
     end

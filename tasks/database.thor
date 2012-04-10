@@ -1,10 +1,12 @@
+require "#{ENV['HOME']}/.hana/config"
+require "#{ENV['HOME']}/.hana/project"
 class Db < Thor
   include Thor::Actions
   
   desc 'start', 'Start database'
   def start
-    p = Project.new
-    current = p.current
+    p = Projekt.new
+    current = p.is_uportal
     if current.type == 'uportal'
       say_status :uportal, "Starting database.", :green
       Dir.chdir("#{current.source_dir}/#{current.name}-src") do
@@ -19,8 +21,8 @@ class Db < Thor
   
   desc 'stop', 'Stop database'
   def stop
-    p = Project.new
-    current = p.current
+    p = Projekt.new
+    current = p.is_uportal
     if current.type == 'uportal'
       say_status :uportal, "Stoping database.", :green
       Dir.chdir("#{current.source_dir}/#{current.name}-src") do
