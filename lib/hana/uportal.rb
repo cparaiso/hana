@@ -2,9 +2,15 @@ require 'yaml'
 require 'nokogiri'
 require "#{ENV['HOME']}/.hana/config"
 require "#{ENV['HOME']}/.hana/project"
+require "thor"
 # uportal tasks
 class Uportal < Thor
   include Thor::Actions
+  
+  # fix help screens
+  def self.banner(task, namespace = true, subcommand = false)
+    "#{basename} #{task.formatted_usage(self, true, subcommand)}"
+  end
   
   desc 'init', 'ant initportal'
   method_option :skip_test, :aliases => "-s", :type => :boolean, :default => false, :desc => "Skip maven tests."

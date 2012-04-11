@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = Hana::VERSION
   s.authors     = ["Chris Paraiso"]
   s.email       = ["cparaiso@unicon.net"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.homepage    = "http://chrisparaiso.com"
+  s.summary     = "do todays work"
+  s.description = "do todays work"
 
   s.rubyforge_project = "hana"
 

@@ -1,7 +1,13 @@
 require "#{ENV['HOME']}/.hana/config"
 require "#{ENV['HOME']}/.hana/project"
+require "thor"
 class Tomcat < Thor
   include Thor::Actions
+  
+  # fix help screens
+  def self.banner(task, namespace = true, subcommand = false)
+    "#{basename} #{task.formatted_usage(self, true, subcommand)}"
+  end
   
   desc 'start', 'Start Tomcat.'
   def start

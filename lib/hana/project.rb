@@ -1,9 +1,15 @@
 require 'yaml'
 require "#{ENV['HOME']}/.hana/config"
 require "#{ENV['HOME']}/.hana/project"
+require "thor"
 # Manages project file tasks
 class Project < Thor
   include Thor::Actions
+  
+  # fix help screens
+  def self.banner(task, namespace = true, subcommand = false)
+    "#{basename} #{task.formatted_usage(self, true, subcommand)}"
+  end
   
   # Task: create a project
   desc 'create [PROJECTNAME]', 'Creates project.'

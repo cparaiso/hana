@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require "hana/main"
+require "thor/group"
+class CLI < Thor
+  register(Hana::Project, 'project', 'project <subcommand>', 'Commands for projects.')
+  register(Hana::Db, 'db', 'db <subcommand>', 'Commands for database.')
+  register(Hana::Uportal, 'uportal', 'up <subcommand>', 'Commands for uPortal.')
+  register(Hana::Tomcat, 'tomcat', 'tom <subcommand>', 'Commands for Tomcat')
+end
+
+CLI.start
