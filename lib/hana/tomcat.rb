@@ -1,4 +1,3 @@
-require "#{ENV['HOME']}/.hana/config"
 require "thor"
 class Tomcat < Thor
   include Thor::Actions
