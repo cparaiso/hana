@@ -1,6 +1,3 @@
-require "#{ENV['HOME']}/.hana/config"
-require "#{ENV['HOME']}/.hana/project"
-require "thor"
 class Db < Thor
   include Thor::Actions
   

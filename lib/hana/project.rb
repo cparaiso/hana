@@ -1,6 +1,5 @@
 require 'yaml'
 require "#{ENV['HOME']}/.hana/config"
-require "#{ENV['HOME']}/.hana/project"
 require "thor"
 # Manages project file tasks
 class Project < Thor

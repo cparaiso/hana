@@ -1,5 +1,4 @@
 require "#{ENV['HOME']}/.hana/config"
-require "#{ENV['HOME']}/.hana/project"
 require "thor"
 class Tomcat < Thor
   include Thor::Actions

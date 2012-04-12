@@ -1,7 +1,6 @@
 require 'yaml'
 require 'nokogiri'
 require "#{ENV['HOME']}/.hana/config"
-require "#{ENV['HOME']}/.hana/project"
 require "thor"
 # uportal tasks
 class Uportal < Thor
