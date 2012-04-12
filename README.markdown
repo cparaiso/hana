@@ -16,3 +16,6 @@ This command creates a config file (config.rb) and a storage file (projects.yml)
 Running the command below from the terminal lists the commands available in Hana:
 
     hana
+
+#TODO
+CAS tasks :(
