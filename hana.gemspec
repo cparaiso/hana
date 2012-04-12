@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://chrisparaiso.com"
   s.summary     = "Automation toolset for Uni."
   s.description = "hana do_todays_work"
+  s.post_install_message = "Greetings, user. \n*************************************************************************************\n**********  If this is your first time installing run 'hana admin install' **********\n*************************************************************************************"
 
   s.rubyforge_project = "hana"
 
