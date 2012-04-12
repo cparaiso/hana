@@ -10,7 +10,7 @@ After the gem is installed run the command below from the terminal:
 
     hana admin install
 
-This command created a config file (config.rb) and a storage file (projects.yml) that keeps track of your projects.  These files can be located in the $HOME/.hana directory.
+This command creates a config file (config.rb) and a storage file (projects.yml) that keeps track of your projects.  These files can be located in the $HOME/.hana directory.
 
 ## Usage
 Running the command below from the terminal lists the commands available in Hana:
