@@ -29,3 +29,6 @@ class Projekt
     current
   end
 end
+
+# structures
+Proj = Struct.new :name, :type, :version, :deploy_dir, :source_dir, :current
