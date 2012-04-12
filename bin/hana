@@ -7,8 +7,9 @@ require "#{ENV['HOME']}/.hana/config"
 class CLI < Thor
   register(Hana::Project, 'project', 'project <subcommand>', 'Commands for projects.')
   register(Hana::Db, 'db', 'db <subcommand>', 'Commands for database.')
-  register(Hana::Uportal, 'uportal', 'up <subcommand>', 'Commands for uPortal.')
-  register(Hana::Tomcat, 'tomcat', 'tom <subcommand>', 'Commands for Tomcat')
+  register(Hana::Uportal, 'uportal', 'uportal <subcommand>', 'Commands for uPortal.')
+  register(Hana::Tomcat, 'tomcat', 'tomcat <subcommand>', 'Commands for Tomcat.')
+  register(Hana::Admin, 'admin', 'admin <subcommand>', 'Commands for administering Hana.')
 end
 
 CLI.start
