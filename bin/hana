@@ -3,7 +3,6 @@ require "hana/main"
 require "hana/settings/project"
 require "thor/group"
 
-
 class CLI < Thor
   register(Hana::Project, 'project', 'project <subcommand>', 'Commands for projects.')
   register(Hana::Db, 'db', 'db <subcommand>', 'Commands for database.')
