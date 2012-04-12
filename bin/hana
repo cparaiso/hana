@@ -2,7 +2,11 @@
 require "hana/main"
 require "hana/settings/project"
 require "thor/group"
-require "#{ENV['HOME']}/.hana/config"
+begin
+  require "#{ENV['HOME']}/.hana/config"
+rescue LoadError
+  require "hana/settings/config"
+end
 
 class CLI < Thor
   register(Hana::Project, 'project', 'project <subcommand>', 'Commands for projects.')
