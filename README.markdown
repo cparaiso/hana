@@ -1,4 +1,4 @@
-# Hana
+# [Hana](http://en.wikipedia.org/wiki/Hana_Highway)
 
 ## Description
 Hana is a command line toolset made for developers who switch to many different uPortal or CAS projects a day.
