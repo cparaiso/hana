@@ -1,7 +1,7 @@
 # [Hana](http://en.wikipedia.org/wiki/Hana_Highway)
 
 ## Description
-Hana is a command line toolset made for developers who switch to many different uPortal or CAS projects a day.
+Hana is a command line toolset made for developers who switch to many different [uPortal](http://www.jasig.org/uportal) or [CAS](http://www.jasig.org/cas) projects a day.
 
 ## Installation
 ### Installing the gem
