@@ -7,8 +7,8 @@ Gem::Specification.new do |s|
   s.version     = Hana::VERSION
   s.authors     = ["Chris Paraiso"]
   s.email       = ["cparaiso@unicon.net"]
-  s.homepage    = "http://chrisparaiso.com"
-  s.summary     = "Automation toolset for Uni."
+  s.homepage    = "https://github.com/cparaiso/hana"
+  s.summary     = "Personal CLI tools"
   s.description = "hana do_todays_work"
   s.post_install_message = "Greetings, user. \n*************************************************************************************\n**********  If this is your first time installing run 'hana admin install' **********\n*************************************************************************************"
 
