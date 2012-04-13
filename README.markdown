@@ -5,8 +5,8 @@ My personal toolset built using the [Thor](https://github.com/wycats/thor) gem t
 
 This toolset is largely opinionated and assumes a lot.  Requires:
 
-   ~/dev/src						# directory where all source files from projects will be stored
-   ~/dev/deploy 				# directory where all tomcat instances will be stored
+    ~/dev/src						# directory where all source files from projects will be stored
+    ~/dev/deploy 				# directory where all tomcat instances will be stored
 
 ## Installation
 ### Installing the gem
