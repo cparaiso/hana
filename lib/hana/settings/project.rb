@@ -1,8 +1,12 @@
 class Projekt
   require 'yaml'
-  
   def initialize
-    @projects = YAML.load_file "#{ENV['HOME']}/.hana/data/projects.yml"
+    begin
+      @projects = YAML.load_file "#{ENV['HOME']}/.hana/data/projects.yml"
+    rescue Errno::ENOENT
+      puts "Hana could not find #{ENV['HOME']}/.hana/data/projects.yml - Please create it or run 'hana admin install'"
+      exit
+    end
   end
   
   def get_current
