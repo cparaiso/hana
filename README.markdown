@@ -1,18 +1,23 @@
-# [Hana](http://en.wikipedia.org/wiki/Hana_Highway)
+# Hana
 
 ## Description
-Hana is a command line toolset made for developers who switch to many different [uPortal](http://www.jasig.org/uportal) or [CAS](http://www.jasig.org/cas) projects a day.
+My personal toolset built using the [Thor](https://github.com/wycats/thor) gem to manage tasks and project switching for uPortal and CAS.
+
+This toolset is largely opinionated and assumes a lot.  Requires:
+
+   ~/dev/src						# directory where all source files from projects will be stored
+   ~/dev/deploy 				# directory where all tomcat instances will be stored
 
 ## Installation
 ### Installing the gem
-    gem install hana
+    gem install hana 		# will not work install version 1.0.0
     hana admin install
 ### Cloning from git, build/install gem from source
     git clone git@github.com:cparaiso/hana.git
     cd hana
     gem build hana.gemspec
     gem install hana-$VERSION.gem
-    hana admin install # creates a config file (config.rb) and a storage file (projects.yml) that keeps track of your projects.  These files can be located in the $HOME/.hana directory.
+    hana admin install 	# creates a config file (config.rb) and a storage file (projects.yml) that keeps track of your projects.  These files can be located in the $HOME/.hana directory.
 
 ## Usage
 Running the command below from the terminal lists the commands available in Hana:
