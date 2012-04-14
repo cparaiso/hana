@@ -85,24 +85,13 @@ class Project < Thor
   # Task: return current project
   desc 'current', 'Shows current project.'
   def current
-=begin
-    @projects = YAML.load_file "#{ENV['HOME']}/.hana/data/projects.yml"
-    abort "There are no projects.  Try creating one first." if not @projects.is_a? Array
-    @projects.each do |project|
-      if project.current == true
-        say_status :current, "Current project: #{project.name} // #{project.type} // #{project.version}", :green
-        return project
-      end
+    p = Projekt.new
+    current = p.get_current
+    if current
+      say_status :current, "#{current.name} // #{current.type} // #{current.version}", :green
+    else
+      say_status :error, "There is no current project.", :red
     end
-    say_status :error, "There is no current project.", :red
-=end
-  p = Projekt.new
-  current = p.get_current
-  if current
-    say_status :current, "#{current.name} // #{current.type} // #{current.version}", :green
-  else
-    say_status :error, "There is no current project.", :red
-  end
   end
   
 #----------------------PRIVATE------------------------
