@@ -9,7 +9,7 @@ class Tomcat < Thor
   
   desc 'start', 'Start Tomcat.'
   def start
-    p = Projekt.new
+    p = HanaUtil::Project.new
     current = p.get_current
     if not current
       say_status :error, "There is no current project.", :red
@@ -24,7 +24,7 @@ class Tomcat < Thor
   
   desc 'stop', 'Stop Tomcat.'
   def stop
-    p = Projekt.new
+    p = HanaUtil::Project.new
     current = p.get_current
     if not current
       say_status :error, "There is no current project.", :red

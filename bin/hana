@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
-require "hana/main"
-require "hana/settings/project"
 require "thor/group"
+require "hana/main"
+require "hana/util/hanautil"
+
 begin
   require "#{ENV['HOME']}/.hana/config"
 rescue LoadError

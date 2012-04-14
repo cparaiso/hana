@@ -8,7 +8,7 @@ class Db < Thor
   
   desc 'start', 'Start database'
   def start
-    p = Projekt.new
+    p = HanaUtil::Project.new
     current = p.is_uportal
     if current.type == 'uportal'
       say_status :uportal, "Starting database.", :green
@@ -24,7 +24,7 @@ class Db < Thor
   
   desc 'stop', 'Stop database'
   def stop
-    p = Projekt.new
+    p = HanaUtil::Project.new
     current = p.is_uportal
     if current.type == 'uportal'
       say_status :uportal, "Stoping database.", :green

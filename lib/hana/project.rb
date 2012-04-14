@@ -85,7 +85,7 @@ class Project < Thor
   # Task: return current project
   desc 'current', 'Shows current project.'
   def current
-    p = Projekt.new
+    p = HanaUtil::Project.new
     current = p.get_current
     if current
       say_status :current, "#{current.name} // #{current.type} // #{current.version}", :green

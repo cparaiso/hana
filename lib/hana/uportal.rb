@@ -13,7 +13,7 @@ class Uportal < Thor
   desc 'init', 'ant initportal'
   method_option :skip_test, :aliases => "-s", :type => :boolean, :default => false, :desc => "Skip maven tests."
   def init
-    p = Projekt.new
+    p = HanaUtil::Project.new
     current = p.is_uportal
     if not current
       say_status :error, "The current project's type is not uportal."
