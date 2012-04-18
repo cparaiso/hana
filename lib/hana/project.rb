@@ -31,13 +31,13 @@ class Project < Thor
       end
       type = ask 'What kind of project?: '
       version = ask 'What version?: '
-      project = Proj.new name, type, version, $deploy_dir, $source_dir, false
+      project = HanaUtil::Proj.new name, type, version, $deploy_dir, $source_dir, false
     else # tag arguments exist, create the project
       if project_name.nil?
         say_status :error, 'Project name required.  Please try again.', :red
         return
       end
-      project = Proj.new project_name, options[:type], options[:version], $deploy_dir, $source_dir, false
+      project = HanaUtil::Proj.new project_name, options[:type], options[:version], $deploy_dir, $source_dir, false
       abort "ERROR: #{project.name} already exists.  Please enter a different project name." if not valid? @projects, project.name
     end
     
@@ -118,7 +118,7 @@ class Project < Thor
   # fetch project type
   def fetch obj
     require 'curb'
-    if obj.instance_of? Proj
+    if obj.instance_of? HanaUtil::Proj
       case obj.type
       when 'uportal'
         if obj.version == 'master'
