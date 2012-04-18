@@ -22,6 +22,10 @@ module HanaUtil
       end
     end
     
+    def list
+      @projects
+    end
+    
     def is_uportal
       current = get_current
       return false if not current.type == 'uportal'

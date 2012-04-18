@@ -94,6 +94,34 @@ class Project < Thor
     end
   end
   
+  desc 'list', 'List all projects'
+  method_option :type, :aliases => "-t", :type => :string, :desc => "List all with the same project type."
+  method_option :version, :aliases => "-v", :type => :string, :desc => "List all with the same version."
+  def list
+    projects = HanaUtil::Project.new.list
+    
+    # filter if there are options
+    if options[:type] or options[:version]
+      projects = projects.find_all {|p| p.type == options[:type]} if options[:type]
+      projects = projects.find_all {|p| p.version == options[:version]} if options[:version]
+    end
+    
+    if projects.length == 0
+      say_status :error, "No projects matched criteria. :(", :red
+      return
+    end
+    # sort by project name
+    projects.sort_by! do |p|
+      p.name
+    end
+
+    puts '------------------------------------------------------------'
+    projects.each_with_index do |p, index|
+      say_status :project, "#{p.name} // #{p.type} // #{p.version}"
+    end
+    puts '------------------------------------------------------------'
+  end
+
 #----------------------PRIVATE------------------------
   private
   # Check if duplicate project is trying to be created
