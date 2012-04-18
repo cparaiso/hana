@@ -117,9 +117,14 @@ class Project < Thor
 
     puts '------------------------------------------------------------'
     projects.each_with_index do |p, index|
-      say_status :project, "#{p.name} // #{p.type} // #{p.version}"
+      if p.current
+        say_status :project, "* #{p.name} // #{p.type} // #{p.version}", :cyan
+      else
+        say_status :project, "#{p.name} // #{p.type} // #{p.version}", :green
+      end
     end
     puts '------------------------------------------------------------'
+    puts "* = current"
   end
 
 #----------------------PRIVATE------------------------
