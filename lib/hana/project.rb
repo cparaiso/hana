@@ -126,7 +126,64 @@ class Project < Thor
     puts '------------------------------------------------------------'
     puts "* = current"
   end
-
+  
+  # Task: create a project
+  desc 'add [PROJECTNAME]', 'Adds existing project to yml.'
+  method_option :type, :aliases => "-t", :type => :string, :desc => "Type of project."
+  method_option :version, :aliases => "-v", :type => :string, :desc => "Which version do you want?"
+  def add project_name=nil
+    # load projects yaml
+    @projects = YAML.load_file "#{ENV['HOME']}/.hana/data/projects.yml"
+    # ask questions if tag args don't exist
+    if options.empty?
+      if project_name.nil?
+        valid_name = false
+        until valid_name == true
+          name = ask 'Name of project: '
+          valid_name = valid? @projects, name
+          say_status :ERROR, "#{name} already exists.  Please enter a different project name.", :red if not valid_name
+        end
+      else
+        abort "ERROR: #{project_name} already exists.  Please enter a different project name." if not valid? @projects, project_name
+        name = project_name
+      end
+      type = ask 'What kind of project?: '
+      version = ask 'What version?: '
+      project = HanaUtil::Proj.new name, type, version, $deploy_dir, $source_dir, false
+    else # tag arguments exist, create the project
+      if project_name.nil?
+        say_status :error, 'Project name required.  Please try again.', :red
+        return
+      end
+      project = HanaUtil::Proj.new project_name, options[:type], options[:version], $deploy_dir, $source_dir, false
+      abort "ERROR: #{project.name} already exists.  Please enter a different project name." if not valid? @projects, project.name
+    end
+    
+    # check if projects yaml file is empty.
+    if @projects.is_a? Array
+      @projects << project
+    else
+      @projects = [project] # is empty push new project in an array
+    end
+    
+    write_to_yaml @projects
+    
+    say_status :finished, "#{project.name} added.", :green
+  end # end of create
+  
+  desc 'delete [PROJECTNAME]', 'Deletes a project.'
+  def delete project_name
+    if project_name.nil?
+      say_status :error, 'Project name required as argument. Try again.', :red
+      return
+    end
+    
+    @projects = YAML.load_file "#{ENV['HOME']}/.hana/data/projects.yml"
+    @projects.delete_if { |p| p.name == project_name }
+    write_to_yaml @projects
+    say_status :delete, "#{project_name} has been removed from tracking."
+  end
+  
 #----------------------PRIVATE------------------------
   private
   # Check if duplicate project is trying to be created
