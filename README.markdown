@@ -22,7 +22,7 @@ This toolset is largely opinionated and assumes a lot.  Requires:
     hana <subcommand>    # lists available subcommands
 
 ## Workflow
-	~ $ hana project create unicorn -t uportal -v 4.0.3
+	~ $ hana project create unicorn -t uportal -v 4.0.3    # create project
 	      tomcat  Found cached Tomcat file.  Using it.
 	     uportal  Found cached file.  Using it.
 	      tomcat  Extracting tomcat.
@@ -33,9 +33,9 @@ This toolset is largely opinionated and assumes a lot.  Requires:
 	     uportal  Extracted to folder: /Users/cparaiso/dev/src/unicorn-src
 	     uportal  Configuring build.properties.
 	    finished  unicorn created.  Don't forget to switch to the project.
-	~ $ hana project switch unicorn
+	~ $ hana project switch unicorn    # switch to project
 	    switched  Project switched to: unicorn
-	~ $ hana db start
+	~ $ hana db start    # start hsql
 	     uportal  Starting database.
 	Buildfile: /Users/cparaiso/dev/src/unicorn-src/build.xml
 	    [mkdir] Created dir: /var/folders/8v/1k2gkj412q1_8084x6lvtbqr0000gn/T/jasig
@@ -51,9 +51,9 @@ This toolset is largely opinionated and assumes a lot.  Requires:
 	BUILD SUCCESSFUL
 	Total time: 3 seconds
 	     uportal  Database started.
-	~ $ hana uportal init
+	~ $ hana uportal init # build
 	... initportal output
-	~ $ hana tomcat start
+	~ $ hana tomcat start # start tomcat
 	... logs/catalina.out output
 ## TODO
 more CAS tasks :(
