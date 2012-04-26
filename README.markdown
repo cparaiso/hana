@@ -1,4 +1,6 @@
 # Hana
+
+# * * * * WORK IN PROGRESS * * * *
 ## Description
 My personal toolset built using the [Thor](https://github.com/wycats/thor) gem to manage tasks and project switching for uPortal and CAS.
 
