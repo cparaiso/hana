@@ -13,10 +13,11 @@ module HanaUtil
     def get_current
       begin
         @projects.each do |project|
-          if project.current == true
+          if project.current
             return project
           end
         end
+        return false
       rescue
         false
       end
@@ -38,7 +39,13 @@ module HanaUtil
       current
     end
   end
-
+  
+  # check if there is an existing tomcat instance running
+  # return pid if there is.  false if not
+  
+  def tomcat?
+    system "ps aux| grep tomcat | grep catalina"
+  end
   # structures
   Proj = Struct.new :name, :type, :version, :deploy_dir, :source_dir, :current
 end
