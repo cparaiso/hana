@@ -13,8 +13,7 @@ class Uportal < Thor
   desc 'init', 'ant initportal'
   method_option :skip_test, :aliases => "-s", :type => :boolean, :default => false, :desc => "Skip maven tests."
   def init
-    p = HanaUtil::Project.new
-    current = p.is_uportal
+    current = HanaUtil::Project.new.is_uportal
     if not current
       say_status :error, "The current project's type is not uportal."
       return
@@ -40,7 +39,7 @@ class Uportal < Thor
   desc 'war', 'ant deploy-war'
   method_option :skip_test, :aliases => "-s", :type => :boolean, :default => false, :desc => "Skip maven tests."
   def war
-    current = is_uportal
+    current = HanaUtil::Project.new.is_uportal
     if not current
       say_status :error, "The current project's type is not uportal."
       return
@@ -56,7 +55,7 @@ class Uportal < Thor
   
   desc 'ear', 'ant deploy-ear'
   def ear
-    current = is_uportal
+    current = HanaUtil::Project.new.is_uportal
     if not current
       say_status :error, "The current project's type is not uportal."
       return
@@ -68,7 +67,7 @@ class Uportal < Thor
   
   desc 'portlet PATH_TO_PORTLET_WAR_FILE', 'ant deployPortletApp -D[arg]'
   def portlet warfile
-    current = is_uportal
+    current = HanaUtil::Project.new.is_uportal
     if not current
       say_status :error, "The current project's type is not uportal."
       return
@@ -81,7 +80,7 @@ class Uportal < Thor
   
   desc 'import FILE', 'ant data-import -Dfile=[arg]'
   def import filename
-    current = is_uportal
+    current = HanaUtil::Project.new.is_uportal
     if not current
       say_status :error, "The current project's type is not uportal."
       return
@@ -97,7 +96,7 @@ class Uportal < Thor
   method_option :sync_skin, :aliases => "-s", :type => :boolean, :default => false, :desc => "Sync skin only."
   method_option :sync_theme, :aliases => "-t", :type => :boolean, :default => false, :desc => "Sync theme only."
   def sync
-    current = is_uportal
+    current = HanaUtil::Project.new.is_uportal
     if not current
       say_status :error, "The current project's type is not uportal."
       return
@@ -130,10 +129,10 @@ class Uportal < Thor
   end
   
   desc 'skin', 'Add or delete skins'
-  method_option :add, :aliases => "-a", :type => :boolean, :default => false, :desc => "Add skin."
+  method_option :add, :aliases => "-a", :type => :string, :default => nil, :desc => "Add skin."
   method_option :default, :aliases => "-d", :type => :string, :default => nil, :desc => "Set default skin."
   def skin skin_name=nil
-    current = is_uportal
+    current = HanaUtil::Project.new.is_uportal
     if not current
       say_status :error, "The current project's type is not uportal.", :red
       return
@@ -176,14 +175,4 @@ class Uportal < Thor
       say_status :uportal, "The default skin has been set to: #{skin_name}"
     end
   end
-
-#----------------------PRIVATE------------------------
-  private
-  def is_uportal
-    p = Project.new
-    current = p.current
-    return false if not current.type == 'uportal'
-    current
-  end
-  
 end
