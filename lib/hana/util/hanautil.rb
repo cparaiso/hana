@@ -29,7 +29,6 @@ module HanaUtil
     
     def is_uportal
       current = get_current
-      puts current
       return false if not current.type == 'uportal'
       current
     end
