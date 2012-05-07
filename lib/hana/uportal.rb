@@ -73,7 +73,7 @@ class Uportal < Thor
       return
     end
     Dir.chdir("#{current.source_dir}/#{current.name}-src") do
-      system "ant deployPortletApp -D#{warfile}"
+      system "ant deployPortletApp -DportletApp#{warfile}"
       say_status :uportal, "Portlet deployed.", :green
     end
   end
